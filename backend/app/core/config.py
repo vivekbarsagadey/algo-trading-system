@@ -49,10 +49,7 @@ class Settings(BaseSettings):
         if self.redis_url_env:
             return self.redis_url_env
         if self.redis_password:
-            return (
-                f"redis://:{self.redis_password}@{self.redis_host}:"
-                f"{self.redis_port}/0"
-            )
+            return f"redis://:{self.redis_password}@{self.redis_host}:" f"{self.redis_port}/0"
         return f"redis://{self.redis_host}:{self.redis_port}/0"
 
     class Config:

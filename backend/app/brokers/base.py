@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
 
+
 class BrokerAdapter(ABC):
     """
     Abstract base class for all broker adapters.

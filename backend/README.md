@@ -21,6 +21,7 @@ source .venv/bin/activate
 # Ensure pip, setuptools & wheel are up-to-date and available inside the venv
 python -m pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+pip install -r dev-requirements.txt  # optional: install lint/test tools
 # If you want editor/CI tools for linting or type-checking, install dev dependencies
 pip install -r dev-requirements.txt
 ```
@@ -295,5 +296,7 @@ If you'd like, I can:
 - Add sample Docker Compose for running Postgres + Redis + Backend.
 - Add Alembic migrations config and an initial migration.
 - Add basic unit tests and a sample Postman collection for the API.
+
+Note: `requirements.txt` and `dev-requirements.txt` packages have been updated to the latest versions available on PyPI as of 2025-12-02. If you run into compatibility issues, you can adjust versions in the files accordingly.
 
 Happy to continue — tell me which of the optional items you'd like next! ✅

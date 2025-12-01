@@ -3,6 +3,7 @@ from .dhan import DhanBroker
 from .angel_one import AngelOneBroker
 from .fyers import FyersBroker
 
+
 def get_broker_adapter(broker_name: str) -> BrokerAdapter:
     """
     Factory function to get the appropriate broker adapter.
@@ -15,5 +16,6 @@ def get_broker_adapter(broker_name: str) -> BrokerAdapter:
         return FyersBroker()
     else:
         raise ValueError(f"Unsupported broker: {broker_name}")
+
 
 __all__ = ["BrokerAdapter", "DhanBroker", "AngelOneBroker", "FyersBroker", "get_broker_adapter"]

@@ -2,6 +2,7 @@ from fyers_apiv3 import fyersModel
 from typing import Dict, Any, List, Optional
 from .base import BrokerAdapter
 
+
 class FyersBroker(BrokerAdapter):
     def __init__(self):
         self.fyers: Optional[fyersModel.FyersModel] = None
@@ -10,10 +11,10 @@ class FyersBroker(BrokerAdapter):
     async def connect(self, credentials: Dict[str, Any]) -> bool:
         self.client_id = credentials.get("client_id")
         access_token = credentials.get("access_token")
-        
+
         # FyersModel initialization
         self.fyers = fyersModel.FyersModel(client_id=self.client_id, token=access_token, log_path="")
-        
+
         # Verify connection by fetching profile
         # Note: fyersModel methods are synchronous.
         try:
@@ -31,26 +32,18 @@ class FyersBroker(BrokerAdapter):
 
     async def place_order(self, order_details: Dict[str, Any]) -> Dict[str, Any]:
         if not self.fyers:
-             raise RuntimeError("Broker not connected")
+            raise RuntimeError("Broker not connected")
 
         # Map order types
         # Fyers: 1 => Limit, 2 => Market, 3 => Stop Limit, 4 => Stop Market
-        order_type_map = {
-            "LIMIT": 1,
-            "MARKET": 2,
-            "STOP_LIMIT": 3,
-            "STOP_MARKET": 4
-        }
-        
+        order_type_map = {"LIMIT": 1, "MARKET": 2, "STOP_LIMIT": 3, "STOP_MARKET": 4}
+
         # Map side
         # Fyers: 1 => Buy, -1 => Sell
-        side_map = {
-            "BUY": 1,
-            "SELL": -1
-        }
+        side_map = {"BUY": 1, "SELL": -1}
 
         data = {
-            "symbol": order_details.get("symbol"), # e.g. NSE:SBIN-EQ
+            "symbol": order_details.get("symbol"),  # e.g. NSE:SBIN-EQ
             "qty": order_details.get("quantity"),
             "type": order_type_map.get(order_details.get("order_type", "MARKET"), 2),
             "side": side_map.get(order_details.get("side", "BUY"), 1),

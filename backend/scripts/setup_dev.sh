@@ -2,7 +2,7 @@
 # Setup development environment: create venv, upgrade pip, install dependencies
 set -euo pipefail
 
-PYTHON=${PYTHON:-python}
+PYTHON=${PYTHON:-python3}
 VENV_DIR=.venv
 
 echo "Creating venv at ${VENV_DIR}..."
@@ -13,6 +13,10 @@ ${PYTHON} -m venv ${VENV_DIR}
 source ${VENV_DIR}/bin/activate
 
 echo "Upgrading pip, setuptools, wheel..."
+if ! python -m pip --version >/dev/null 2>&1; then
+  echo "pip not available in venv; attempting to bootstrap ensurepip"
+  python -m ensurepip --upgrade || true
+fi
 python -m pip install --upgrade pip setuptools wheel
 
 echo "Installing main requirements..."
