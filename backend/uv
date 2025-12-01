@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Small helper wrapper to run uvicorn with defaults.
+# Usage: ./uv [uvicorn args]
+# Example: ./uv --reload
+
+set -euo pipefail
+
+# If VIRTUAL_ENV set, use that python; otherwise, rely on env's python
+PYTHON=${PYTHON:-python}
+
+HOST=${HOST:-0.0.0.0}
+PORT=${PORT:-8000}
+
+# Build arguments
+ARGS=()
+for arg in "$@"; do
+  ARGS+=("$arg")
+done
+
+# If entrypoint invoked as `./uv` (no args), default to no --reload (use default)
+
+# Run uvicorn using the python provided by environment (venv)
+exec "$PYTHON" -m uvicorn app.main:app --host "$HOST" --port "$PORT" "${ARGS[@]}"

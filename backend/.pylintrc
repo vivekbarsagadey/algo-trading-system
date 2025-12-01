@@ -1,0 +1,25 @@
+[MASTER]
+# A comma-separated list of package or module names from where C extensions may
+# be loaded. Extensions are loading from site packages which are not yet present in the venv.
+extension-pkg-whitelist=
+
+[MESSAGES CONTROL]
+# Only show errors and warnings by default; fine to show conventions but keep noise low
+disable=missing-docstring,too-few-public-methods
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=200
+
+[REPORTS]
+output-format=colorized
+reports=no
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,df
+
+[TYPECHECK]
+ignored-modules=pydantic_settings
+
+[SIMILARITIES]
+min-similarity-lines=4
