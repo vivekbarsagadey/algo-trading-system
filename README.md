@@ -31,6 +31,7 @@ A monorepo containing a FastAPI backend service and an Expo React Native mobile 
 - Python 3.11+
 - Node.js 18+ and npm
 - Expo CLI (`npm install -g expo-cli`)
+- Optional: `uv` CLI (`pip install --upgrade uv`) — used here for dev environment management
 
 ## Getting Started
 
@@ -42,6 +43,9 @@ cd algo-trading-system
 ```
 
 ### 2. Set up environment variables
+
+If you're using the `uv` workflow, `uv init` will copy `.env.example` to `.env`.
+Otherwise copy the example file manually:
 
 ```bash
 cp .env.example .env
@@ -56,11 +60,45 @@ docker-compose up -d
 
 ### 4. Set up the backend
 
+You can use the `uv` CLI (recommended if you have it installed) or create a venv manually.
+
+Option A — Using the `uv` CLI (recommended):
+
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install the `uv` CLI if you don't have it already (system or pipx)
+pip install --upgrade uv
+
+# Initialize the project: create a `.venv` and copy `.env.example` to `.env`
+uv init
+
+# Sync dependencies (installs from `requirements.txt`/`pyproject.toml`)
+uv sync
+
+# Run the development server
+uv run app.main:app --reload
+```
+
+Option B — Using a standard Python venv:
+
+```bash
+cd backend
+
+# Create and activate a venv (POSIX):
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Copy environment variables file
+cp .env.example .env
+
+# Start the dev server (use uv if present, otherwise uvicorn)
+# If you have the `uv` CLI, use `uv run ...` — otherwise use `uvicorn` directly
+uv run app.main:app --reload
+# or
 uvicorn app.main:app --reload
 ```
 
