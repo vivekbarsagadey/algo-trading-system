@@ -77,7 +77,9 @@ uv init
 uv sync
 
 # Run the development server
-uv run app.main:app --reload
+# NOTE: `uv run` expects a command to execute (like `uvicorn`). Passing `app.main:app` directly causes a spawn error.
+# Use `uv run uvicorn <module>` to run the server via `uv`.
+uv run uvicorn app.main:app --reload
 ```
 
 Option B — Using a standard Python venv:
@@ -95,11 +97,35 @@ pip install -r requirements.txt
 # Copy environment variables file
 cp .env.example .env
 
-# Start the dev server (use uv if present, otherwise uvicorn)
-# If you have the `uv` CLI, use `uv run ...` — otherwise use `uvicorn` directly
-uv run app.main:app --reload
+# Start the dev server (use `uv` if present; `uv run` needs the binary to spawn)
+# Preferred (using `uv` to run `uvicorn`):
+uv run uvicorn app.main:app --reload
+# Alternative directly with uvicorn (no `uv` required):
+uvicorn app.main:app --reload
 # or
 uvicorn app.main:app --reload
+```
+
+Troubleshooting
+-----------------
+
+- If you see an error like `ImportError: email-validator is not installed, run pip install pydantic[email]` when starting the app, install the missing dependency:
+
+```bash
+# If you're using the uv workflow:
+uv sync
+
+# Or install manually in your venv:
+pip install 'pydantic[email]'
+# or:
+pip install email-validator
+```
+
+- If you're using Docker, update your `backend/requirements.txt` (this project now pins `pydantic[email]` and `email-validator`) and rebuild the image:
+
+```bash
+docker-compose build backend
+docker-compose up -d
 ```
 
 ### 5. Set up the mobile app
