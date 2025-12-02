@@ -5,6 +5,7 @@ PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 
 .PHONY: help venv install install-dev up down migrate run web celery fmt lint test clean
+ .PHONY: integration-test
 
 help:
 	@echo "Available targets:"
@@ -57,6 +58,10 @@ lint:
 test:
 	@echo "Running tests (pytest)"
 	$(PYTHON) -m pytest -q
+
+integration-test:
+	@echo "Running integration tests (pytest -m integration)"
+	$(PYTHON) -m pytest -q -m integration
 
 clean:
 	@echo "Cleaning development artifacts"

@@ -291,6 +291,15 @@ make celery
  make dev-up
  # Stop the dev stack
  make dev-down
+
+### Integration tests
+
+To run integration tests (which use a temporary SQLite database):
+
+```bash
+make integration-test
+```
+
 ```
 
 You can also use the `scripts` helper scripts:
