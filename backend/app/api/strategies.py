@@ -1,27 +1,16 @@
-from enum import Enum
-from typing import List, Optional, Any
-from uuid import uuid4
+from typing import List, Optional
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+from app.models.strategy import Strategy as StrategyModel, StrategyStatus, StrategyType
 
 router = APIRouter()
 
-# In-memory strategy store for demo (replace with database in production)
-strategies_db: dict[str, dict[str, Any]] = {}
 
-
-class StrategyType(str, Enum):
-    MOMENTUM = "momentum"
-    MEAN_REVERSION = "mean_reversion"
-    BREAKOUT = "breakout"
-    SCALPING = "scalping"
-
-
-class StrategyStatus(str, Enum):
-    ACTIVE = "active"
-    PAUSED = "paused"
-    STOPPED = "stopped"
+# Reuse StrategyType and StrategyStatus from `app.models.strategy` to ensure consistent enums across model & API.
 
 
 class StrategyCreate(BaseModel):
@@ -29,7 +18,7 @@ class StrategyCreate(BaseModel):
     strategy_type: StrategyType
     symbol: str
     parameters: dict
-    user_id: str
+    user_id: int
 
 
 class StrategyUpdate(BaseModel):
@@ -39,101 +28,116 @@ class StrategyUpdate(BaseModel):
 
 
 class StrategyResponse(BaseModel):
-    id: str
+    id: int
     name: str
     strategy_type: StrategyType
     symbol: str
     parameters: dict
     status: StrategyStatus
-    user_id: str
+    user_id: int
+
+    class Config:
+        orm_mode = True
 
 
 @router.post("/", response_model=StrategyResponse)
-async def create_strategy(strategy: StrategyCreate):
-    """Create a new trading strategy."""
-    strategy_id = str(uuid4())
-    new_strategy: dict[str, Any] = {
-        "id": strategy_id,
-        "name": strategy.name,
-        "strategy_type": strategy.strategy_type,
-        "symbol": strategy.symbol,
-        "parameters": strategy.parameters,
-        "status": StrategyStatus.STOPPED,
-        "user_id": strategy.user_id,
-    }
-    strategies_db[strategy_id] = new_strategy
-    return StrategyResponse(**new_strategy)
+def create_strategy(strategy: StrategyCreate, db: Session = Depends(get_db)):
+    """Create a new trading strategy and persist to the database."""
+    db_strategy = StrategyModel(
+        name=strategy.name,
+        strategy_type=strategy.strategy_type,
+        symbol=strategy.symbol,
+        parameters=strategy.parameters,
+        status=StrategyStatus.STOPPED,
+        user_id=strategy.user_id,
+    )
+    db.add(db_strategy)
+    db.commit()
+    db.refresh(db_strategy)
+    return StrategyResponse.from_orm(db_strategy)
 
 
 @router.get("/", response_model=List[StrategyResponse])
-async def list_strategies(user_id: Optional[str] = None):
+def list_strategies(user_id: Optional[int] = None, db: Session = Depends(get_db)):
     """List all strategies, optionally filtered by user."""
-    strategies = list(strategies_db.values())
+    query = db.query(StrategyModel)
     if user_id:
-        strategies = [s for s in strategies if s["user_id"] == user_id]
-    return [StrategyResponse(**s) for s in strategies]
+        query = query.filter(StrategyModel.user_id == user_id)
+    strategies = query.all()
+    return [StrategyResponse.from_orm(s) for s in strategies]
 
 
 @router.get("/{strategy_id}", response_model=StrategyResponse)
-async def get_strategy(strategy_id: str):
+def get_strategy(strategy_id: int, db: Session = Depends(get_db)):
     """Get a specific strategy by ID."""
-    if strategy_id not in strategies_db:
+    strategy = db.get(StrategyModel, strategy_id)
+    if not strategy:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Strategy not found",
         )
-    return StrategyResponse(**strategies_db[strategy_id])
+    return StrategyResponse.from_orm(strategy)
 
 
 @router.patch("/{strategy_id}", response_model=StrategyResponse)
-async def update_strategy(strategy_id: str, update: StrategyUpdate):
+def update_strategy(strategy_id: int, update: StrategyUpdate, db: Session = Depends(get_db)):
     """Update a strategy."""
-    if strategy_id not in strategies_db:
+    strategy = db.get(StrategyModel, strategy_id)
+    if not strategy:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Strategy not found",
         )
-    strategy = strategies_db[strategy_id]
     if update.name is not None:
-        strategy["name"] = update.name
+        strategy.name = update.name
     if update.parameters is not None:
-        strategy["parameters"] = update.parameters
+        strategy.parameters = update.parameters
     if update.status is not None:
-        strategy["status"] = update.status
-    return StrategyResponse(**strategy)
+        strategy.status = update.status
+    db.commit()
+    db.refresh(strategy)
+    return StrategyResponse.from_orm(strategy)
 
 
 @router.delete("/{strategy_id}")
-async def delete_strategy(strategy_id: str):
+def delete_strategy(strategy_id: int, db: Session = Depends(get_db)):
     """Delete a strategy."""
-    if strategy_id not in strategies_db:
+    strategy = db.get(StrategyModel, strategy_id)
+    if not strategy:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Strategy not found",
         )
-    del strategies_db[strategy_id]
+    db.delete(strategy)
+    db.commit()
     return {"message": "Strategy deleted successfully"}
 
 
 @router.post("/{strategy_id}/start", response_model=StrategyResponse)
-async def start_strategy(strategy_id: str):
+def start_strategy(strategy_id: int, db: Session = Depends(get_db)):
     """Start a strategy (activate for execution)."""
-    if strategy_id not in strategies_db:
+    strategy = db.get(StrategyModel, strategy_id)
+    if not strategy:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Strategy not found",
         )
-    strategies_db[strategy_id]["status"] = StrategyStatus.ACTIVE
-    return StrategyResponse(**strategies_db[strategy_id])
+    strategy.status = StrategyStatus.ACTIVE
+    db.commit()
+    db.refresh(strategy)
+    return StrategyResponse.from_orm(strategy)
 
 
 @router.post("/{strategy_id}/stop", response_model=StrategyResponse)
-async def stop_strategy(strategy_id: str):
+def stop_strategy(strategy_id: int, db: Session = Depends(get_db)):
     """Stop a running strategy."""
-    if strategy_id not in strategies_db:
+    strategy = db.get(StrategyModel, strategy_id)
+    if not strategy:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Strategy not found",
         )
-    strategies_db[strategy_id]["status"] = StrategyStatus.STOPPED
-    return StrategyResponse(**strategies_db[strategy_id])
+    strategy.status = StrategyStatus.STOPPED
+    db.commit()
+    db.refresh(strategy)
+    return StrategyResponse.from_orm(strategy)

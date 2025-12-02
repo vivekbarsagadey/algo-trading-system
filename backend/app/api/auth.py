@@ -6,8 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 
 from app.core.config import settings
-from app.core.security import (create_access_token, decode_token,
-                               get_password_hash, verify_password)
+from app.core.security import create_access_token, decode_token, get_password_hash, verify_password
 
 router = APIRouter()
 

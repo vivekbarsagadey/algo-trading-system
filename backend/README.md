@@ -200,7 +200,7 @@ In production, broker connections should be persisted in the database and creden
 
 ## 📈 Strategies API
 
-Manage trading strategies in-memory (demo):
+Manage trading strategies (DB-backed):
 
 - `POST /api/v1/strategies/` — create a strategy
 - `GET /api/v1/strategies/` — list strategies, optional `?user_id=` to filter
@@ -219,7 +219,34 @@ curl -X POST http://localhost:8000/api/v1/strategies/ \
 ```
 
 Notes:
-- Strategies are stored in memory in `strategies_db` for the demo. Swap to DB-backed storage using `app/models/strategy.py` and `app/core/database.py` for persistence.
+
+- Strategies are persisted in the database using `app/models/strategy.py` and SQLAlchemy. We newly implemented DB CRUD for strategies (migrated off the in-memory `strategies_db`).
+
+-- Use Alembic to create the database tables and run migrations before starting the service (see Migration section below).
+
+### Database Migrations (Alembic)
+
+Alembic is included and the repository contains a `alembic` folder with an initial migration that creates `users` and `strategies` tables.
+
+To create a database and run migrations locally:
+
+```bash
+# 1) For local dev using Docker Compose: start DB and Redis
+docker-compose up -d db redis
+
+# 2) Ensure DATABASE_URL env var points at the running dev DB (docker-compose sets host 'db')
+export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/algo_trading
+
+# 3) Run migrations
+./scripts/migrate_db.sh
+```
+
+Alternatively, if you’re running the web service inside Docker Compose, you can run the migration step via an ephemeral container:
+
+```bash
+docker-compose run --rm web ./scripts/migrate_db.sh
+```
+
 
 ---
 
@@ -292,6 +319,10 @@ pip install pre-commit
 pre-commit install
 pre-commit run --all-files
 ```
+
+- For background tasks, run Celery worker and ensure Redis is up and accessible.
+
+- Use a separate environment for production, and never commit `.env` with secrets.
 If you'd like, I can:
 - Add sample Docker Compose for running Postgres + Redis + Backend.
 - Add Alembic migrations config and an initial migration.
