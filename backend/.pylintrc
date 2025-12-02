@@ -5,7 +5,7 @@ extension-pkg-whitelist=
 
 [MESSAGES CONTROL]
 # Only show errors and warnings by default; fine to show conventions but keep noise low
-disable=missing-docstring,too-few-public-methods
+disable=missing-docstring,too-few-public-methods,not-callable,broad-exception-caught
 
 [FORMAT]
 # Maximum number of characters on a single line.

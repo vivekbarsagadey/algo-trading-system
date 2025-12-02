@@ -1,5 +1,7 @@
+from typing import Any, Dict, List, Optional
+
 from fyers_apiv3 import fyersModel
-from typing import Dict, Any, List, Optional
+
 from .base import BrokerAdapter
 
 

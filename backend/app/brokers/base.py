@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List
 
 
 class BrokerAdapter(ABC):
@@ -12,14 +12,14 @@ class BrokerAdapter(ABC):
         """
         Establish connection with the broker using provided credentials.
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def get_profile(self) -> Dict[str, Any]:
         """
         Get user profile information.
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def place_order(self, order_details: Dict[str, Any]) -> Dict[str, Any]:
@@ -33,32 +33,32 @@ class BrokerAdapter(ABC):
         - order_type: str (MARKET/LIMIT)
         - price: float (optional, for limit orders)
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def cancel_order(self, order_id: str) -> bool:
         """
         Cancel an existing order.
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def get_order_status(self, order_id: str) -> Dict[str, Any]:
         """
         Get the status of an order.
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def get_positions(self) -> List[Dict[str, Any]]:
         """
         Get current open positions.
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def get_holdings(self) -> List[Dict[str, Any]]:
         """
         Get current holdings.
         """
-        pass
+        raise NotImplementedError()

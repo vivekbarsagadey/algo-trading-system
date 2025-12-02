@@ -6,11 +6,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 
 from app.core.config import settings
-from app.core.security import (
-    create_access_token,
-    get_password_hash,
-    verify_password,
-)
+from app.core.security import (create_access_token, decode_token,
+                               get_password_hash, verify_password)
 
 router = APIRouter()
 
@@ -68,7 +65,6 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    from app.core.security import decode_token
 
     payload = decode_token(token)
     if payload is None:

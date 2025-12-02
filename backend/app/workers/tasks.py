@@ -21,7 +21,7 @@ def execute_strategy(self, strategy_id: str, parameters: dict):
 
 
 @celery_app.task
-def process_market_data(symbol: str, data: dict):
+def process_market_data(symbol: str, _data: dict):
     """
     Process incoming market data for a symbol.
     """
@@ -31,7 +31,7 @@ def process_market_data(symbol: str, data: dict):
 
 
 @celery_app.task
-def send_trade_notification(user_id: str, trade_details: dict):
+def send_trade_notification(user_id: str, _trade_details: dict):
     """
     Send notification about a trade execution.
     """

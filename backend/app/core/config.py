@@ -13,14 +13,14 @@ class Settings(BaseSettings):
     postgres_password: str = "postgres"
 
     # Optional full database url (e.g. DATABASE_URL)
-    database_url_env: Optional[str] = Field(None, env="DATABASE_URL")
+    database_url_env: Optional[str] = Field(default=None, env="DATABASE_URL")
 
     # Redis
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_password: str = ""
     # Optional full redis url (e.g. REDIS_URL)
-    redis_url_env: Optional[str] = Field(None, env="REDIS_URL")
+    redis_url_env: Optional[str] = Field(default=None, env="REDIS_URL")
 
     # Security
     secret_key: str = "your-secret-key-change-in-production"
