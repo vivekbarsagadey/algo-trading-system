@@ -287,6 +287,10 @@ make migrate
 make web
 # Run the worker
 make celery
+ # Start the dev stack (Docker + migrations + web + celery)
+ make dev-up
+ # Stop the dev stack
+ make dev-down
 ```
 
 You can also use the `scripts` helper scripts:
