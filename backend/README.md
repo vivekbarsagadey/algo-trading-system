@@ -215,14 +215,14 @@ Example create:
 ```bash
 curl -X POST http://localhost:8000/api/v1/strategies/ \
   -H 'Content-Type: application/json' \
-  -d '{"name":"Mean rev","strategy_type":"mean_reversion","symbol":"SBIN","parameters":{"lookback":20},"user_id":"123"}'
+  -d '{"name":"Mean rev","strategy_type":"mean_reversion","symbol":"SBIN","parameters":{"lookback":20},"user_id":1}'
 ```
 
 Notes:
 
 - Strategies are persisted in the database using `app/models/strategy.py` and SQLAlchemy. We newly implemented DB CRUD for strategies (migrated off the in-memory `strategies_db`).
 
--- Use Alembic to create the database tables and run migrations before starting the service (see Migration section below).
+- Use Alembic to create the database tables and run migrations before starting the service (see Migration section below).
 
 ### Database Migrations (Alembic)
 
@@ -247,6 +247,11 @@ Alternatively, if you’re running the web service inside Docker Compose, you ca
 docker-compose run --rm web ./scripts/migrate_db.sh
 ```
 
+Or run the `migrate` service directly which reads `DATABASE_URL` from env:
+
+```bash
+docker-compose run --rm migrate
+```
 
 ---
 
@@ -264,6 +269,32 @@ No tests are included at the moment. You can add PyTest and build CI for unit te
 ```bash
 ./uv --reload
 ```
+
+### Makefile & Dev scripts
+
+To simplify common workflows, a `Makefile` and convenience scripts are included. Typical commands:
+
+```bash
+# Create venv and install dependencies
+make install
+# Create venv and install dev dependencies (formatters/lint/test tools)
+make install-dev
+# Start local Postgres & Redis and start web + celery using docker-compose
+make up
+# Run database migrations
+make migrate
+# Run the application in the current venv
+make web
+# Run the worker
+make celery
+```
+
+You can also use the `scripts` helper scripts:
+
+- `scripts/dev_up.sh` — starts docker compose, runs migrations, and starts services (web & celery).
+- `scripts/dev_down.sh` — stops docker compose services.
+- `scripts/start_local.sh` — run the web server locally using venv.
+
 
 - Create an alias for convenience (optional):
 
@@ -299,6 +330,7 @@ pip install pre-commit
 pre-commit install
 pre-commit run --all-files
 ```
+
 - For background tasks, run Celery worker and ensure Redis is up and accessible.
 - Use a separate environment for production, and never commit `.env` with secrets.
 
