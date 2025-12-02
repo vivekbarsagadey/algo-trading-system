@@ -7,7 +7,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 EXPOSE 8000
 
-# Use the wrapper script `uv` so the command is consistent with local usage
-CMD ["./uv"]
+# Use the entrypoint that runs migrations (if available) then starts Uvicorn
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
