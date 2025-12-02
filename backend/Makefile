@@ -63,6 +63,15 @@ integration-test:
 	@echo "Running integration tests (pytest -m integration)"
 	$(PYTHON) -m pytest -q -m integration
 
+integration-docker:
+	@echo "Start DB & Redis via docker-compose, run migrations, then run integration tests against Postgres"
+	docker-compose up -d db redis
+	@echo "Set DATABASE_URL to local Postgres and run migrations..."
+	export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/algo_trading && ./scripts/migrate_db.sh
+	$(PYTHON) -m pytest -q -m integration
+	@echo "Stopping local db & redis..."
+	docker-compose down
+
 clean:
 	@echo "Cleaning development artifacts"
 	rm -rf $(VENV)

@@ -17,6 +17,13 @@ from app.models.user import User as UserModel
 
 @pytest.fixture(scope="session")
 def engine(tmp_path_factory):
+    # If DATABASE_URL env var is set, use that (for dockerized integration tests), otherwise a temporary sqlite file
+    import os
+
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        engine = create_engine(db_url, future=True)
+        return engine
     tmp_dir = tmp_path_factory.mktemp("db")
     db_file = tmp_dir / "test_db.sqlite"
     url = f"sqlite:///{db_file}"

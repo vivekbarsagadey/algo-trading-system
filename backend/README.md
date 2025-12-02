@@ -300,6 +300,12 @@ To run integration tests (which use a temporary SQLite database):
 make integration-test
 ```
 
+To run integration tests using a dockerized Postgres + Redis (recommended for CI-like validation):
+
+```bash
+make integration-docker
+```
+
 ```
 
 You can also use the `scripts` helper scripts:
