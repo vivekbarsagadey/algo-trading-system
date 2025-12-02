@@ -61,3 +61,16 @@ test:
 clean:
 	@echo "Cleaning development artifacts"
 	rm -rf $(VENV)
+
+run:
+	@echo "Alias for 'web' to match other developer expectations"
+	$(MAKE) web
+
+dev-up:
+	@echo "Start local containers, migrations, and app via docker-compose"
+	./scripts/dev_up.sh
+
+dev-down:
+	@echo "Stop dev services via docker-compose"
+	./scripts/dev_down.sh
+
