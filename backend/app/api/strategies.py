@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Any
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, status
@@ -8,7 +8,7 @@ from pydantic import BaseModel
 router = APIRouter()
 
 # In-memory strategy store for demo (replace with database in production)
-strategies_db: dict = {}
+strategies_db: dict[str, dict[str, Any]] = {}
 
 
 class StrategyType(str, Enum):
@@ -52,7 +52,7 @@ class StrategyResponse(BaseModel):
 async def create_strategy(strategy: StrategyCreate):
     """Create a new trading strategy."""
     strategy_id = str(uuid4())
-    new_strategy = {
+    new_strategy: dict[str, Any] = {
         "id": strategy_id,
         "name": strategy.name,
         "strategy_type": strategy.strategy_type,

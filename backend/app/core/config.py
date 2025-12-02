@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import Field
+import os
 from pydantic_settings import BaseSettings
 
 
@@ -13,14 +13,14 @@ class Settings(BaseSettings):
     postgres_password: str = "postgres"
 
     # Optional full database url (e.g. DATABASE_URL)
-    database_url_env: Optional[str] = Field(default=None, env="DATABASE_URL")
+    database_url_env: Optional[str] = None
 
     # Redis
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_password: str = ""
     # Optional full redis url (e.g. REDIS_URL)
-    redis_url_env: Optional[str] = Field(default=None, env="REDIS_URL")
+    redis_url_env: Optional[str] = None
 
     # Security
     secret_key: str = "your-secret-key-change-in-production"
@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         # Prefer a full DATABASE_URL if provided
+        # If a DATABASE_URL env var was set, prefer that
+        db = os.getenv("DATABASE_URL")
+        if db is not None:
+            return db
         if self.database_url_env:
             return self.database_url_env
         user = self.postgres_user
@@ -46,6 +50,9 @@ class Settings(BaseSettings):
     @property
     def redis_url(self) -> str:
         # If REDIS_URL is provided, use it directly
+        redis = os.getenv("REDIS_URL")
+        if redis is not None:
+            return redis
         if self.redis_url_env:
             return self.redis_url_env
         if self.redis_password:
