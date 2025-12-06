@@ -14,7 +14,7 @@ The frontend is a simple, minimal, high-speed mobile app designed for **retail t
 * Start/Stop automation
 * View strategy status
 
-The focus is **simplicity**, **minimal UI**, **zero complexity**, and **fast interaction**, exactly as defined in the PRD frontend requirements ().
+The focus is **simplicity**, **minimal UI**, **zero complexity**, and **fast interaction**, exactly as defined in the PRD frontend requirements.
 
 ---
 

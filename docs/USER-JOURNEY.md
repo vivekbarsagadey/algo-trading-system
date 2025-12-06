@@ -24,7 +24,7 @@ This is the *human-level* journey behind the technical flows we have already doc
 * Prefers minimal setup
 * Needs execution reliability
 
-Matches PRD demand for **extreme simplicity**, “no charts”, “no complexity” ().
+Matches PRD demand for **extreme simplicity**, "no charts", "no complexity".
 
 ---
 

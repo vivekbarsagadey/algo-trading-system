@@ -130,7 +130,7 @@ This documentation serves as the **single source of truth** for the Algo Trading
 
 ---
 
-### [API DOCUMENTATION.MD](API%20DOCUMENTATION.MD) – Database & Redis Schema
+### [API-DOCUMENTATION.md](API-DOCUMENTATION.md) – Database & Redis Schema
 > **What**: Unified database and Redis schema definitions.
 >
 > **Why You Need This**: Single source of truth for all data structures.
@@ -198,7 +198,7 @@ This documentation serves as the **single source of truth** for the Algo Trading
 
 ---
 
-### [END-TO-END SEQUENCE DIAGRAM.md](END-TO-END%20SEQUENCE%20DIAGRAM.md) – Master Sequence
+### [END-TO-END-SEQUENCE-DIAGRAM.md](END-TO-END-SEQUENCE-DIAGRAM.md) – Master Sequence
 > **What**: Single unified diagram showing the complete system flow.
 >
 > **Why You Need This**: The most important diagram for architecture validation and onboarding.
@@ -436,7 +436,7 @@ This documentation serves as the **single source of truth** for the Algo Trading
 
 ### For Architects
 1. Start with [HLD.MD](HLD.MD) for system overview
-2. Reference [END-TO-END SEQUENCE DIAGRAM.md](END-TO-END%20SEQUENCE%20DIAGRAM.md) for complete flow
+3. Reference [END-TO-END-SEQUENCE-DIAGRAM.md](END-TO-END-SEQUENCE-DIAGRAM.md) for complete flow
 3. Use [STATE-MACHINE.md](STATE-MACHINE.md) for state management
 4. Follow [SYSTEM-CAPABILITIES-MATRIX.md](SYSTEM-CAPABILITIES-MATRIX.md) for capability mapping
 

@@ -392,8 +392,6 @@ Alerts for:
 * Redis failure
 * Broker downtime
 
-()
-
 ---
 
 # **5. External Interface Requirements**

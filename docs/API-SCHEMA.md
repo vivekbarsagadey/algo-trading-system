@@ -10,7 +10,6 @@ Base URL
 
 All requests/responses are **JSON**.
 Authentication uses **JWT**.
-(Security requirement from PRD + SRS)
 
 
 
@@ -37,8 +36,6 @@ Authentication uses **JWT**.
 * name: required
 * email: valid email
 * password: min 6 chars
-
-(PRD: registration flow requirement)
 
 
 ### **Response**
@@ -76,10 +73,10 @@ Authentication uses **JWT**.
 
 # **2. BROKER INTEGRATION API**
 
-PRD Section **6 — Broker Integration:**
-✔ Validate API tokens
-✔ Save API Key / Secret / Access Token
-✔ Support order placement downstream
+**PRD Section 6 — Broker Integration:**
+- Validate API tokens
+- Save API Key / Secret / Access Token
+- Support order placement downstream
 
 
 ---
@@ -101,7 +98,7 @@ PRD Section **6 — Broker Integration:**
 * api_key: required
 * api_secret: required
 * access_token: required
-* Backend must validate using broker API (DOCUMENT PACK SRS)
+* Backend must validate using broker API
 
 
 ### **Response**
@@ -126,12 +123,10 @@ PRD Section **6 — Broker Integration:**
 
 # **3. STRATEGY MANAGEMENT API**
 
-PRD: user sets
-✔ symbol, buy time, sell time, stop-loss, quantity.
+**PRD:** User sets symbol, buy time, sell time, stop-loss, quantity.
 
-
-Backend must:
-✔ Validate → Save DB → Load Redis → Trigger execution.
+**Backend must:**
+- Validate → Save DB → Load Redis → Trigger execution
 
 
 ---
@@ -156,7 +151,7 @@ Backend must:
 * buy_time < sell_time
 * stop_loss: required
 * quantity > 0
-* stop-loss mandatory (PRD Safety rule)
+* Stop-loss is mandatory (PRD Safety rule)
 
 
 ### **Response**

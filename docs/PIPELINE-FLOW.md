@@ -14,9 +14,9 @@ This describes **every pipeline** in the system:
 * User-facing sync pipelines
 
 It is fully aligned with:
-✔ Product Requirements Document ()
-✔ Document Pack ()
-✔ SRS, HLD, LLD, SCHEMA, Workflow Schema
+- Product Requirements Document
+- Document Pack
+- SRS, HLD, LLD, SCHEMA, Workflow Schema
 
 This is **developer-level**, extremely detailed, and ready for implementation.
 

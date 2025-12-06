@@ -2,9 +2,9 @@ Below is your **FULL-SEQUENCE-DOCUMENT.md** — a complete, production-grade **S
 
 This is deeply aligned with:
 
-✔ Product Requirements Document (PRD) ()
-✔ Document Pack ()
-✔ SRS, HLD, LLD, Schema, Workflow-Schema & Pipeline-Flow
+- Product Requirements Document (PRD)
+- Document Pack
+- SRS, HLD, LLD, Schema, Workflow-Schema & Pipeline-Flow
 
 This document shows **all sequence diagrams in text form**, covering:
 

@@ -16,7 +16,7 @@ The backend of the Algo Trading System is a **high-performance, event-driven arc
 * Worker-driven order placement
 * Logging & monitoring
 
-The design meets all PRD backend requirements: strategy management, time-based triggers, event-based execution, multi-tenant isolation, broker connection, safety, and high performance ().
+The design meets all PRD backend requirements: strategy management, time-based triggers, event-based execution, multi-tenant isolation, broker connection, safety, and high performance.
 
 
 

@@ -2,11 +2,11 @@ Below is your complete **END-TO-END SEQUENCE DIAGRAM.md**, integrating **ALL flo
 
 This is the **master sequence diagram** representing the entire system behavior.
 
-It is fully aligned with:
+This is fully aligned with:
 
-✔ PRD ()
-✔ DOCUMENT PACK (SRS, SDD, Redis Schema, API Contract, etc.) ()
-✔ All previously created documents (SRS, HLD, LLD, Workflow, Pipeline, State Machine, Traceability, QA Matrix)
+- PRD
+- DOCUMENT PACK (SRS, SDD, Redis Schema, API Contract, etc.)
+- All previously created documents (SRS, HLD, LLD, Workflow, Pipeline, State Machine, Traceability, QA Matrix)
 
 If you want a **PNG version**, I can generate it.
 
@@ -186,7 +186,7 @@ Backend --> Logs: Recovery complete
 
 # **3. Detailed Narrative of End-to-End Flow**
 
-The following narrative matches PRD Section 8 User Flow () and SRS Functional Requirements ().
+The following narrative matches PRD Section 8 User Flow and SRS Functional Requirements.
 
 ---
 
