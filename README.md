@@ -186,7 +186,7 @@ algo-trading-system/
 
 - Docker and Docker Compose
 - Python 3.11+
-- Node.js 18+ and npm
+- Node.js 20+ (LTS) and npm
 - Expo CLI (`npm install -g expo-cli`)
 - Optional: `uv` CLI for faster Python dependency management
 

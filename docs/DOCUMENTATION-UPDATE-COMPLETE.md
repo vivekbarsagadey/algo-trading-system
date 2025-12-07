@@ -297,6 +297,8 @@ GET    /strategies/:id/stream       # SSE real-time updates
 
 ### Local Development
 
+**Prerequisites**: Node.js 20+ (LTS), Python 3.11+
+
 ```bash
 # Backend (existing)
 cd backend

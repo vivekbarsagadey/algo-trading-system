@@ -36,7 +36,7 @@ This guide provides step-by-step instructions for implementing the Algo Trading 
 | Requirement | Version | Purpose |
 |-------------|---------|---------|
 | Python | 3.11+ | Backend development |
-| Node.js | 18+ | Mobile app development |
+| Node.js | 20+ | Mobile app development (LTS) |
 | Docker | 24+ | Containerization |
 | PostgreSQL | 15+ | Database |
 | Redis | 7+ | In-memory runtime |

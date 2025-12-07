@@ -369,6 +369,8 @@ services:
 
 ### Initial Setup
 
+**Prerequisites**: Node.js 20+ (LTS), Python 3.11+
+
 ```bash
 # Backend (existing)
 cd backend
