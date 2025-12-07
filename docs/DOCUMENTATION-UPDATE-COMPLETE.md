@@ -2,7 +2,7 @@
 
 ## Overview
 
-All documentation has been successfully updated to reflect the new **Admin Web Application** built with Next.js 15. The Algo Trading System now provides **dual frontend access** - mobile app AND comprehensive web application with role-based access control.
+All documentation has been successfully updated to reflect the new **Admin Web Application** built with Next.js 16. The Algo Trading System now provides **dual frontend access** - mobile app AND comprehensive web application with role-based access control.
 
 **Update Date**: December 7, 2025  
 **Scope**: Complete documentation overhaul for dual frontend architecture
@@ -13,7 +13,7 @@ All documentation has been successfully updated to reflect the new **Admin Web A
 
 ### Key Additions
 
-1. **Admin Web Application (Next.js 15)**
+1. **Admin Web Application (Next.js 16)**
    - Full-featured web interface for system management
    - Role-based access control (Admin, User, Broker)
    - Strategy playground for testing without real money
@@ -26,7 +26,7 @@ All documentation has been successfully updated to reflect the new **Admin Web A
    - **Broker Role**: Integration analytics, API health monitoring
 
 3. **Technology Stack Additions**
-   - Next.js 15 (App Router)
+   - Next.js 16 (App Router)
    - NextAuth.js v5 (Authentication)
    - Shadcn/ui + Tailwind CSS (UI components)
    - Server-Sent Events (Real-time updates)
@@ -41,11 +41,11 @@ All documentation has been successfully updated to reflect the new **Admin Web A
 | File | Status | Changes |
 |------|--------|---------|
 | **docs/PRD.md** | ✅ Complete | • Added dual frontend architecture<br>• Added System Administrator persona<br>• Added 27 new admin features (F-6.1 to F-6.16)<br>• Updated feature counts: 42 P0, 14 P1, 1 P2 |
-| **docs/HLD.MD** | ✅ Complete | • Updated system overview (10 components)<br>• Rewrote architecture diagram<br>• Added Role-Based Access Architecture (section 2.1)<br>• Added comprehensive Next.js 15 implementation (section 3.1.1)<br>• Included complete app structure, code examples, SSE implementation |
+| **docs/HLD.MD** | ✅ Complete | • Updated system overview (10 components)<br>• Rewrote architecture diagram<br>• Added Role-Based Access Architecture (section 2.1)<br>• Added comprehensive Next.js 16 implementation (section 3.1.1)<br>• Included complete app structure, code examples, SSE implementation |
 | **docs/SRS.MD** | ✅ Complete | • Updated scope with dual access modes<br>• Added 3 user role types (Admin, User, Broker)<br>• Added Admin Web Application Module (section 3.9)<br>• Added 14 new functional requirements (FR-31 to FR-44)<br>• Added 14 admin web UI screens (section 5.2) |
-| **docs/FRONTEND-SPEC.md** | ✅ Complete | • Updated overview for dual frontend<br>• Added comprehensive Next.js 15 section (section 13)<br>• Documented technology stack, security, deployment<br>• Added real-time updates (SSE) specifications |
+| **docs/FRONTEND-SPEC.md** | ✅ Complete | • Updated overview for dual frontend<br>• Added comprehensive Next.js 16 section (section 13)<br>• Documented technology stack, security, deployment<br>• Added real-time updates (SSE) specifications |
 | **docs/ADMIN-WEB-APP-SUMMARY.md** | ✅ New File | • Complete implementation guide<br>• Technology stack details<br>• Role permission matrix<br>• Feature breakdown by role<br>• Architecture highlights<br>• API endpoints<br>• Deployment guide<br>• Testing strategy |
-| **.github/instructions/algo-trading-system-rules.instructions.md** | ✅ Complete | • Updated system purpose<br>• Updated architecture diagram<br>• Added key actors (System Administrators, Broker Partners)<br>• Added Next.js 15 code patterns (section 7)<br>• Added authentication, middleware, API, SSE patterns |
+| **.github/instructions/algo-trading-system-rules.instructions.md** | ✅ Complete | • Updated system purpose<br>• Updated architecture diagram<br>• Added key actors (System Administrators, Broker Partners)<br>• Added Next.js 16 code patterns (section 7)<br>• Added authentication, middleware, API, SSE patterns |
 
 ### 📝 Pending Updates (Not Critical)
 
@@ -154,7 +154,7 @@ These files may benefit from updates but are not blocking:
 │                                                 │
 │  ┌──────────────────┐  ┌──────────────────┐    │
 │  │  Mobile App      │  │  Admin Web App   │    │
-│  │  (React Native)  │  │  (Next.js 15)    │    │
+│  │  (React Native)  │  │  (Next.js 16)    │    │
 │  └──────────────────┘  └──────────────────┘    │
 └─────────────────────────────────────────────────┘
                     │
@@ -215,7 +215,7 @@ These files may benefit from updates but are not blocking:
 - **React Hook Form** (Forms)
 
 ### Admin Web App (NEW)
-- **Next.js 15** (App Router)
+- **Next.js 16** (App Router)
 - **TypeScript** (Type safety)
 - **NextAuth.js v5** (Authentication)
 - **Shadcn/ui** (UI components)
@@ -421,7 +421,7 @@ services:
 
 2. **Setup Development Environment**
    - Clone/update repository
-   - Install Next.js 15 dependencies
+   - Install Next.js 16 dependencies
    - Configure environment variables
    - Run local development servers
 
@@ -462,7 +462,7 @@ services:
 
 ### External Resources
 
-- **Next.js 15 Docs**: https://nextjs.org/docs
+- **Next.js 16 Docs**: https://nextjs.org/docs
 - **NextAuth.js v5 Docs**: https://authjs.dev
 - **Shadcn/ui Docs**: https://ui.shadcn.com
 - **Tailwind CSS Docs**: https://tailwindcss.com
@@ -478,7 +478,7 @@ services:
 ✅ **27 new admin features documented**  
 ✅ **14 new functional requirements added**  
 ✅ **14 admin UI screens specified**  
-✅ **Complete Next.js 15 implementation guide**  
+✅ **Complete Next.js 16 implementation guide**  
 ✅ **Role-based access control architecture**  
 ✅ **Real-time SSE implementation documented**  
 ✅ **Deployment and testing strategies**  
@@ -490,7 +490,7 @@ services:
 🎯 **Strategy Playground**: Risk-free testing environment  
 🎯 **Real-Time Updates**: Live strategy monitoring via SSE  
 🎯 **Comprehensive Admin**: Full platform management capabilities  
-🎯 **Modern Stack**: Next.js 15 + TypeScript + Tailwind CSS  
+🎯 **Modern Stack**: Next.js 16 + TypeScript + Tailwind CSS  
 
 ---
 

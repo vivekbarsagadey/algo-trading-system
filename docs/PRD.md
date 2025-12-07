@@ -32,12 +32,12 @@ The system enables users to:
 
 The system provides:
 - **Mobile App (React Native)**: Primary interface for retail traders on-the-go
-- **Admin Web Application (Next.js 15)**: Comprehensive web interface for users, admins, and brokers with role-based access control
+- **Admin Web Application (Next.js 16)**: Comprehensive web interface for users, admins, and brokers with role-based access control
 
 **Target Market:** Retail traders in India seeking automated execution for intraday and positional strategies.
 
 **Technology Stack:** 
-- **Frontend**: React Native (Mobile), Next.js 15 (Admin Web App)
+- **Frontend**: React Native (Mobile), Next.js 16 (Admin Web App)
 - **Backend**: FastAPI (Python 3.11+), Redis (In-memory execution), PostgreSQL (Persistence)
 - **Infrastructure**: AWS (ECS/EKS, RDS, ElastiCache)
 - **Authentication**: JWT with role-based access control (Admin, User, Broker)
@@ -209,9 +209,9 @@ Download App → Register/Login → Connect Broker → Create Strategy → Start
 | **F-5.3** | Last Action Display | Show last executed action (BUY/SELL/SL Hit) | P0 |
 | **F-5.4** | Position Status | Show current position (None/Bought/Sold) | P0 |
 
-### 4.6 Admin Web Application (Next.js 15)
+### 4.6 Admin Web Application (Next.js 16)
 
-The Admin Web Application provides a comprehensive web interface built with Next.js 15, featuring role-based access control and serving as an alternative to the mobile app for users while providing powerful administrative capabilities.
+The Admin Web Application provides a comprehensive web interface built with Next.js 16, featuring role-based access control and serving as an alternative to the mobile app for users while providing powerful administrative capabilities.
 
 #### 4.6.1 Role-Based Access Control
 
@@ -251,7 +251,7 @@ The Admin Web Application provides a comprehensive web interface built with Next
 
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
-| **Framework** | Next.js 15 (App Router) | React-based web framework |
+| **Framework** | Next.js 16 (App Router) | React-based web framework |
 | **Authentication** | NextAuth.js v5 + JWT | Session management |
 | **UI Library** | Shadcn/ui + Tailwind CSS | Modern component library |
 | **State Management** | React Server Components + Zustand | Optimal performance |

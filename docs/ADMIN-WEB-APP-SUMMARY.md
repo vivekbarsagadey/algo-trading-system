@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Algo Trading System now includes a comprehensive **Admin Web Application** built with Next.js 15, providing:
+The Algo Trading System now includes a comprehensive **Admin Web Application** built with Next.js 16, providing:
 
 1. **Dual Access Modes**: Mobile app AND web application
 2. **Role-Based Access Control**: Admin, User, and Broker roles
@@ -15,7 +15,7 @@ The Algo Trading System now includes a comprehensive **Admin Web Application** b
 ## Technology Stack
 
 ### Frontend (Admin Web App)
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **UI Library**: Shadcn/ui + Tailwind CSS
 - **Authentication**: NextAuth.js v5
@@ -478,7 +478,7 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/algo_trading
 
 ## Key Decisions
 
-### Why Next.js 15?
+### Why Next.js 16?
 1. **Server Components**: Optimal performance with server-side rendering
 2. **App Router**: Modern routing with layouts and nested routes
 3. **Server Actions**: Simplified form handling and mutations
@@ -505,7 +505,7 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/algo_trading
 ## Support & Resources
 
 ### Documentation
-- Next.js 15 Docs: https://nextjs.org/docs
+- Next.js 16 Docs: https://nextjs.org/docs
 - NextAuth.js v5 Docs: https://authjs.dev
 - Shadcn/ui Docs: https://ui.shadcn.com
 - Tailwind CSS Docs: https://tailwindcss.com

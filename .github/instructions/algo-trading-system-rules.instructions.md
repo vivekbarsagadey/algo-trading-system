@@ -48,7 +48,7 @@ Algo Trading System is a **high-speed, multi-tenant automated trading platform**
 │                                                                 │
 │  ┌────────────────────────┐    ┌────────────────────────────┐  │
 │  │  Mobile App            │    │  Admin Web App             │  │
-│  │  (React Native/Expo)   │    │  (Next.js 15)              │  │
+│  │  (React Native/Expo)   │    │  (Next.js 16)              │  │
 │  │                        │    │                            │  │
 │  │  • Strategy Creation   │    │  • User Management (Admin) │  │
 │  │  • Broker Setup        │    │  • System Monitoring       │  │
@@ -100,7 +100,7 @@ Algo Trading System is a **high-speed, multi-tenant automated trading platform**
 | ----------------- | ------------------------------- |
 | Backend API       | FastAPI (Python 3.11+)          |
 | Mobile App        | React Native / Expo             |
-| **Admin Web App** | **Next.js 15 (App Router)**     |
+| **Admin Web App** | **Next.js 16 (App Router)**     |
 | **Web Auth**      | **NextAuth.js v5**              |
 | **Web UI**        | **Shadcn/ui + Tailwind CSS**    |
 | **Real-Time**     | **Server-Sent Events (SSE)**    |
@@ -623,7 +623,7 @@ AES_MASTER_KEY = os.getenv("AES_MASTER_KEY")
 
 ---
 
-## 7. Admin Web Application (Next.js 15)
+## 7. Admin Web Application (Next.js 16)
 
 ### Authentication Pattern
 

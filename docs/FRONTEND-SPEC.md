@@ -534,7 +534,7 @@ If you want next:
 
 Just tell me — **“Generate X next.”**
 
-# **13. Admin Web Application (Next.js 15)**
+# **13. Admin Web Application (Next.js 16)**
 
 ## **13.1 Overview**
 
@@ -546,8 +546,8 @@ The Admin Web Application is a comprehensive web-based platform providing role-b
 ## **13.2 Technology Stack**
 
 | Layer | Technology |
-|-------|------------|
-| Framework | Next.js 15 (App Router) |
+|-------| ------------ |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | UI Library | Shadcn/ui + Radix UI |
 | Styling | Tailwind CSS |
@@ -616,7 +616,7 @@ cd admin-web && npm install && npm run dev
 **Updated Sections**:
 - ✅ Overview (dual frontend: Mobile + Web)
 - ✅ Mobile App Specification (React Native)
-- ✅ Admin Web Application (Next.js 15)
+- ✅ Admin Web Application (Next.js 16)
 
 **For Complete Implementation Details**:
 - See `/docs/ADMIN-WEB-APP-SUMMARY.md`

@@ -70,7 +70,7 @@ docker-compose build
 
 - ✅ All existing code compatible with Node.js 20
 - ✅ No breaking changes required
-- ✅ Next.js 15 fully supports Node.js 20
+- ✅ Next.js 16 fully supports Node.js 20
 - ✅ React Native/Expo compatible
 
 ## Verification
