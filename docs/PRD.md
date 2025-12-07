@@ -21,17 +21,26 @@
 
 ## 1. Executive Summary
 
-The Algo Trading System is a **mobile-first automated trading platform** designed for retail traders who want simple, time-based trading automation without the complexity of traditional algorithmic trading tools.
+The Algo Trading System is a **comprehensive automated trading platform** with dual interfaces designed for retail traders who want simple, time-based trading automation without the complexity of traditional algorithmic trading tools.
 
 The system enables users to:
 - Define simple trading strategies with buy time, sell time, stop-loss, and quantity
 - Connect their broker accounts securely
 - Execute trades automatically with high-speed, fail-safe execution
 - Monitor strategy status in real-time
+- Access platform via mobile app OR admin web application
+
+The system provides:
+- **Mobile App (React Native)**: Primary interface for retail traders on-the-go
+- **Admin Web Application (Next.js 15)**: Comprehensive web interface for users, admins, and brokers with role-based access control
 
 **Target Market:** Retail traders in India seeking automated execution for intraday and positional strategies.
 
-**Technology Stack:** React Native (Mobile), FastAPI (Backend), Redis (In-memory execution), PostgreSQL (Persistence), AWS (Infrastructure)
+**Technology Stack:** 
+- **Frontend**: React Native (Mobile), Next.js 15 (Admin Web App)
+- **Backend**: FastAPI (Python 3.11+), Redis (In-memory execution), PostgreSQL (Persistence)
+- **Infrastructure**: AWS (ECS/EKS, RDS, ElastiCache)
+- **Authentication**: JWT with role-based access control (Admin, User, Broker)
 
 ---
 
@@ -73,7 +82,18 @@ and executes with high-speed, fail-safe reliability.
 
 ### 3.1 Target User Personas
 
-#### Persona 1: Beginner Trader (Primary)
+#### Persona 1: System Administrator (Primary)
+
+| Attribute | Description |
+|-----------|-------------|
+| **Profile** | Platform admin managing all users and system health |
+| **Technical Skill** | High – understands system architecture and trading concepts |
+| **Goal** | Monitor platform health, manage users, resolve issues |
+| **Pain Points** | Need comprehensive view of all users, strategies, and system metrics |
+| **Motivation** | "I need full control and visibility to ensure platform reliability" |
+| **Access Level** | Admin Web Application with full privileges |
+
+#### Persona 2: Beginner Trader (Primary)
 
 | Attribute | Description |
 |-----------|-------------|
@@ -82,8 +102,9 @@ and executes with high-speed, fail-safe reliability.
 | **Goal** | Remove emotional trading decisions |
 | **Pain Points** | Overwhelmed by complex trading tools, misses entry/exit times |
 | **Motivation** | "I just want to buy at 9:30 AM and sell at 3:15 PM with a stop-loss" |
+| **Access Level** | Mobile App OR Web Application (User role) |
 
-#### Persona 2: Part-Time Trader (Secondary)
+#### Persona 3: Part-Time Trader (Secondary)
 
 | Attribute | Description |
 |-----------|-------------|
@@ -92,8 +113,9 @@ and executes with high-speed, fail-safe reliability.
 | **Goal** | Execute predetermined strategies while working |
 | **Pain Points** | Can't monitor positions during work hours |
 | **Motivation** | "I know what I want to trade, I just can't execute it manually" |
+| **Access Level** | Mobile App OR Web Application (User role) |
 
-#### Persona 3: Disciplined Trader (Secondary)
+#### Persona 4: Disciplined Trader (Secondary)
 
 | Attribute | Description |
 |-----------|-------------|
@@ -187,13 +209,86 @@ Download App → Register/Login → Connect Broker → Create Strategy → Start
 | **F-5.3** | Last Action Display | Show last executed action (BUY/SELL/SL Hit) | P0 |
 | **F-5.4** | Position Status | Show current position (None/Bought/Sold) | P0 |
 
-### 4.6 Feature Priority Matrix
+### 4.6 Admin Web Application (Next.js 15)
+
+The Admin Web Application provides a comprehensive web interface built with Next.js 15, featuring role-based access control and serving as an alternative to the mobile app for users while providing powerful administrative capabilities.
+
+#### 4.6.1 Role-Based Access Control
+
+| Role | Permissions | Access Scope |
+|------|-------------|--------------|
+| **Admin** | Full system access, user management, system monitoring | All features |
+| **User** | Strategy management, broker integration, monitoring | Own data only |
+| **Broker** | View strategies using their API, monitor integration health | Broker-specific data |
+
+#### 4.6.2 Admin Features
+
+| Feature ID | Feature | Description | Priority |
+|------------|---------|-------------|----------|
+| **F-6.1** | User Management Dashboard | View, create, edit, delete users | P0 |
+| **F-6.2** | Role Assignment | Assign/modify user roles (Admin/User/Broker) | P0 |
+| **F-6.3** | System Health Monitor | Real-time metrics: uptime, latency, order stats | P0 |
+| **F-6.4** | Strategy Overview | View all strategies across all users | P0 |
+| **F-6.5** | Execution Logs | Comprehensive logging of all order executions | P0 |
+| **F-6.6** | Error Tracking | Monitor and debug system errors | P0 |
+| **F-6.7** | Analytics Dashboard | Platform-wide usage analytics and charts | P1 |
+| **F-6.8** | User Impersonation | View system as specific user (for support) | P1 |
+| **F-6.9** | Configuration Management | Manage system-wide settings | P1 |
+
+#### 4.6.3 User Features (Web Alternative to Mobile)
+
+| Feature ID | Feature | Description | Priority |
+|------------|---------|-------------|----------|
+| **F-6.10** | Web Authentication | JWT-based login with NextAuth.js | P0 |
+| **F-6.11** | Strategy Builder | Web-based strategy creation interface | P0 |
+| **F-6.12** | Broker Connection | Manage broker credentials via web | P0 |
+| **F-6.13** | Strategy Control | Start/stop strategies from web dashboard | P0 |
+| **F-6.14** | Real-time Updates | Live strategy status with Server Components | P0 |
+| **F-6.15** | Trade History | View past executions and performance | P1 |
+| **F-6.16** | Playground | Test strategies with simulated data | P1 |
+
+#### 4.6.4 Technical Implementation
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Framework** | Next.js 15 (App Router) | React-based web framework |
+| **Authentication** | NextAuth.js v5 + JWT | Session management |
+| **UI Library** | Shadcn/ui + Tailwind CSS | Modern component library |
+| **State Management** | React Server Components + Zustand | Optimal performance |
+| **API Integration** | Server Actions + Route Handlers | Backend communication |
+| **Real-time** | Server-Sent Events (SSE) | Live updates |
+| **Charts** | Recharts | Analytics visualization |
+| **Forms** | React Hook Form + Zod | Validation |
+
+#### 4.6.5 Security Features
+
+| Feature | Implementation | Priority |
+|---------|----------------|----------|
+| Proxy Middleware | Route protection based on role | P0 |
+| CORS Configuration | Secure API access | P0 |
+| CSRF Protection | Token-based protection | P0 |
+| Rate Limiting | Per-user/IP rate limits | P0 |
+| Session Management | Secure cookie handling | P0 |
+| Input Sanitization | XSS prevention | P0 |
+| SQL Injection Protection | Parameterized queries | P0 |
+
+#### 4.6.6 User Interface Features
+
+| Feature | Description | Priority |
+|---------|-------------|----------|
+| Responsive Design | Mobile, tablet, desktop support | P0 |
+| Dark Mode | Theme switching capability | P1 |
+| Keyboard Shortcuts | Power user navigation | P1 |
+| Accessibility (WCAG 2.1) | Screen reader support, ARIA labels | P1 |
+| Internationalization | Multi-language support (future) | P2 |
+
+### 4.7 Feature Priority Matrix
 
 | Priority | Count | Description |
 |----------|-------|-------------|
-| **P0 (Must Have)** | 22 | Critical for MVP launch |
-| **P1 (Should Have)** | 6 | Important for complete experience |
-| **P2 (Nice to Have)** | 0 | Future enhancements |
+| **P0 (Must Have)** | 42 | Critical for MVP launch (includes admin web app) |
+| **P1 (Should Have)** | 14 | Important for complete experience |
+| **P2 (Nice to Have)** | 1 | Future enhancements |
 
 ---
 

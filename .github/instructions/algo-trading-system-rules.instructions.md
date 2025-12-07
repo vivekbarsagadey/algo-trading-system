@@ -29,38 +29,51 @@ applyTo: "**"
 
 Algo Trading System is a **high-speed, multi-tenant automated trading platform** that provides:
 
-- **Mobile app** for retail traders to create and manage simple strategies
+- **Dual frontend architecture** - Mobile app AND web application
+  - **Mobile app** for retail traders to create and manage strategies on-the-go
+  - **Admin web app** for comprehensive platform management and user access
 - **Backend execution engine** with Redis-based in-memory runtime
 - **Broker integrations** (Zerodha, Dhan, Fyers, Angel One)
 - **Real-time market monitoring** via WebSockets
 - **Automated order execution** with mandatory stop-loss protection
 - **Multi-tenant isolation** for secure strategy execution
+- **Role-based access control** (Admin, User, Broker roles)
+- **Strategy playground** for testing without real money
 
 ### System Components
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Mobile App (React Native)                   │
-│                  (Expo-based Trading Interface)                 │
+│                  CLIENT INTERFACES (Dual Access)                │
 │                                                                 │
-│   Strategy Creation ----> API Calls ----> Backend Services     │
+│  ┌────────────────────────┐    ┌────────────────────────────┐  │
+│  │  Mobile App            │    │  Admin Web App             │  │
+│  │  (React Native/Expo)   │    │  (Next.js 15)              │  │
+│  │                        │    │                            │  │
+│  │  • Strategy Creation   │    │  • User Management (Admin) │  │
+│  │  • Broker Setup        │    │  • System Monitoring       │  │
+│  │  • Status Monitoring   │    │  • Web Strategy Access     │  │
+│  └────────────────────────┘    │  • Playground Testing      │  │
+│                                 │  • Real-Time Updates (SSE) │  │
+│                                 └────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                     FastAPI Backend                             │
-│                (Auth, Strategy, Broker Services)                │
+│          (Auth, Strategy, Broker, Admin Services)               │
 │                                                                 │
 │   ┌───────────────┐     ┌───────────────────────────────┐      │
-│   │  Auth Service │ --> │  Strategy Validation          │      │
+│   │  Auth Service │ --> │  Role-Based Access Control    │      │
+│   │  (JWT + Roles)│     │  (Admin/User/Broker)          │      │
 │   └───────────────┘     └───────────────────────────────┘      │
 │           │                         │                           │
 │           ▼                         ▼                           │
 │   ┌───────────────┐     ┌───────────────────────────────┐      │
 │   │ Broker Service│     │  Redis Runtime Store          │      │
-│   └───────────────┘     └───────────────────────────────┘      │
-│           │                         │                           │
-│           ▼                         ▼                           │
+│   └───────────────┘     │  + Pub/Sub (SSE)              │      │
+│           │             └───────────────────────────────┘      │
+│           ▼                         │                           │
 │   ┌─────────────────────────────────────────────────────┐      │
 │   │        Execution Engine (Order Placement)           │      │
 │   └─────────────────────────────────────────────────────┘      │
@@ -68,16 +81,18 @@ Algo Trading System is a **high-speed, multi-tenant automated trading platform**
                               │
                               ▼
                      PostgreSQL (Persistent Storage)
+                     + User Roles + Audit Logs
 ```
 
 ### Key Actors
 
-- **Retail Traders** – End users creating and running automated strategies
+- **Retail Traders** – End users creating and running automated strategies (mobile OR web)
+- **System Administrators** – Managing platform users, monitoring system health
+- **Broker Partners** – Monitoring API integrations and performance
 - **Backend Developers** – Building FastAPI services and execution logic
-- **Mobile Developers** – Developing React Native app interface
+- **Frontend Developers** – Developing React Native app and Next.js web app
 - **DevOps Engineers** – Managing AWS infrastructure and deployments
 - **QA Testers** – Ensuring system reliability and safety
-- **Broker Integrations** – Handling API connections to trading platforms
 
 ### Technology Stack
 
@@ -85,10 +100,14 @@ Algo Trading System is a **high-speed, multi-tenant automated trading platform**
 | ----------------- | ------------------------------- |
 | Backend API       | FastAPI (Python 3.11+)          |
 | Mobile App        | React Native / Expo             |
-| In-Memory Runtime | Redis                           |
+| **Admin Web App** | **Next.js 15 (App Router)**     |
+| **Web Auth**      | **NextAuth.js v5**              |
+| **Web UI**        | **Shadcn/ui + Tailwind CSS**    |
+| **Real-Time**     | **Server-Sent Events (SSE)**    |
+| In-Memory Runtime | Redis (+ Pub/Sub for SSE)       |
 | Database          | PostgreSQL                      |
 | Message Queue     | Celery + Redis                  |
-| Authentication    | JWT                             |
+| Authentication    | JWT (with role claims)          |
 | Encryption        | AES-256 for credentials         |
 | Cloud Platform    | AWS (ECS/EKS, RDS, ElastiCache) |
 | Monitoring        | CloudWatch                      |
@@ -604,17 +623,193 @@ AES_MASTER_KEY = os.getenv("AES_MASTER_KEY")
 
 ---
 
-## 7. Quick Reference
+## 7. Admin Web Application (Next.js 15)
+
+### Authentication Pattern
+
+```typescript
+// lib/auth.ts - Get current user (server-side)
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+
+export async function getCurrentUser() {
+  const session = await getServerSession(authOptions)
+  return session?.user
+}
+
+export async function requireRole(role: string) {
+  const user = await getCurrentUser()
+  if (!user) redirect('/login')
+  if (user.role !== role) redirect('/dashboard')
+  return user
+}
+```
+
+### Proxy Middleware Pattern
+
+```typescript
+// app/proxy.ts - Route protection
+import { NextRequest, NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
+
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req })
+  
+  // Public routes
+  if (req.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.next()
+  }
+  
+  // Require auth
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
+  
+  // Admin-only routes
+  if (req.nextUrl.pathname.startsWith('/admin')) {
+    if (token.role !== 'Admin') {
+      return NextResponse.redirect(new URL('/dashboard', req.url))
+    }
+  }
+  
+  return NextResponse.next()
+}
+```
+
+### API Integration Pattern
+
+```typescript
+// lib/api.ts - Backend API calls
+class ApiClient {
+  private baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+  
+  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`,
+      ...options.headers,
+    }
+    
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...options,
+      headers,
+    })
+    
+    if (!response.ok) {
+      throw new Error('API request failed')
+    }
+    
+    return response.json()
+  }
+  
+  // Strategy operations
+  async getStrategies(userId?: string) {
+    return this.request(`/strategies${userId ? `?user_id=${userId}` : ''}`)
+  }
+  
+  async startStrategy(id: string) {
+    return this.request(`/strategies/${id}/start`, { method: 'POST' })
+  }
+}
+```
+
+### Real-Time Updates (SSE) Pattern
+
+```typescript
+// hooks/useStrategyStream.ts - Server-Sent Events
+import { useEffect, useState } from 'react'
+
+export function useStrategyStream(strategyId: string) {
+  const [data, setData] = useState(null)
+  const [isConnected, setIsConnected] = useState(false)
+  
+  useEffect(() => {
+    const eventSource = new EventSource(`/api/strategies/${strategyId}/stream`)
+    
+    eventSource.onmessage = (event) => {
+      setData(JSON.parse(event.data))
+    }
+    
+    eventSource.onopen = () => setIsConnected(true)
+    eventSource.onerror = () => setIsConnected(false)
+    
+    return () => eventSource.close()
+  }, [strategyId])
+  
+  return { data, isConnected }
+}
+```
+
+### Form Validation Pattern
+
+```typescript
+// lib/validators.ts - Zod schemas
+import * as z from 'zod'
+
+export const strategySchema = z.object({
+  symbol: z.string().min(1, 'Symbol is required'),
+  buyTime: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, 'Invalid time format'),
+  sellTime: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, 'Invalid time format'),
+  stopLoss: z.number().positive('Stop-loss must be positive'),
+  quantity: z.number().int().positive('Quantity must be positive'),
+}).refine(data => data.buyTime < data.sellTime, {
+  message: 'Buy time must be before sell time',
+  path: ['sellTime'],
+})
+```
+
+### Server Component Pattern
+
+```typescript
+// app/(dashboard)/strategies/page.tsx
+import { requireAuth } from '@/lib/auth'
+import { apiClient } from '@/lib/api'
+import { StrategyList } from '@/components/strategies/StrategyList'
+
+export default async function StrategiesPage() {
+  const user = await requireAuth()
+  const strategies = await apiClient.getStrategies(user.id)
+  
+  return <StrategyList strategies={strategies} />
+}
+```
+
+### Role-Based UI Pattern
+
+```typescript
+// components/admin/UserActions.tsx
+'use client'
+
+import { useSession } from 'next-auth/react'
+
+export function UserActions() {
+  const { data: session } = useSession()
+  
+  // Show different UI based on role
+  if (session?.user.role === 'Admin') {
+    return <AdminControls />
+  }
+  
+  return <UserControls />
+}
+```
+
+---
+
+## 8. Quick Reference
 
 ### Most Common Operations
 
-| Task                    | Code                                              |
-| ----------------------- | ------------------------------------------------- |
-| **Validate strategy**   | `errors = validate_strategy(data)`                |
-| **Create strategy**     | `strategy = create_strategy(user_id, data)`       |
-| **Execute order**       | `result = place_order(broker, order_data)`        |
-| **Check stop-loss**     | `if price <= strategy.stop_loss: sell()`          |
-| **Encrypt credentials** | `encrypted = encrypt_aes256(api_key, master_key)` |
+| Task                      | Code                                                  |
+| ------------------------- | ----------------------------------------------------- |
+| **Validate strategy**     | `errors = validate_strategy(data)`                    |
+| **Create strategy**       | `strategy = create_strategy(user_id, data)`           |
+| **Execute order**         | `result = place_order(broker, order_data)`            |
+| **Check stop-loss**       | `if price <= strategy.stop_loss: sell()`              |
+| **Encrypt credentials**   | `encrypted = encrypt_aes256(api_key, master_key)`     |
+| **Get current user (web)** | `user = await getCurrentUser()`                       |
+| **Require role (web)**    | `user = await requireRole('Admin')`                   |
+| **Stream updates (web)**  | `const { data } = useStrategyStream(strategyId)`      |
 
 ### ID Prefixes
 

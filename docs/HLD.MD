@@ -8,17 +8,18 @@
 
 The Algo Trading System consists of:
 
-1. **Mobile App (React Native / Expo)**
-2. **Backend REST API (FastAPI)**
-3. **Execution Engine (Python microservice)**
-4. **Scheduler Service (Time-based triggers)**
-5. **Market Listener (WebSocket price feed)**
-6. **Redis (In-memory execution runtime)**
-7. **PostgreSQL (persistent storage)**
-8. **Broker Integration Layer (e.g., Zerodha API wrapper)**
-9. **AWS Infrastructure (ECS/EKS, ElastiCache, RDS, CloudWatch)**
+1. **Mobile App (React Native / Expo)** – Primary mobile interface for traders
+2. **Admin Web Application (Next.js 15)** – Comprehensive web interface with role-based access
+3. **Backend REST API (FastAPI)** – Core business logic and API layer
+4. **Execution Engine (Python microservice)** – High-speed order execution
+5. **Scheduler Service (Time-based triggers)** – Cron-based task scheduler
+6. **Market Listener (WebSocket price feed)** – Real-time price monitoring
+7. **Redis (In-memory execution runtime)** – High-speed state management
+8. **PostgreSQL (persistent storage)** – Durable data storage
+9. **Broker Integration Layer** – Multi-broker API wrappers (Zerodha, Dhan, Fyers, Angel One)
+10. **AWS Infrastructure** – Cloud infrastructure (ECS/EKS, ElastiCache, RDS, CloudWatch)
 
-The system executes BUY/SELL/SL orders with microsecond-level Redis access and minimal latency.
+The system executes BUY/SELL/SL orders with microsecond-level Redis access and minimal latency while providing dual access modes: mobile-first experience and comprehensive web administration.
 
 ---
 
@@ -26,48 +27,127 @@ The system executes BUY/SELL/SL orders with microsecond-level Redis access and m
 
 (If you want, I will generate a **PNG version**.)
 
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          CLIENT INTERFACES                                   │
+│                                                                             │
+│  ┌────────────────────────┐          ┌───────────────────────────────────┐ │
+│  │   Mobile App            │          │   Admin Web App (Next.js 15)      │ │
+│  │   (React Native)        │          │   - User Dashboard (Role: User)   │ │
+│  │                         │          │   - Admin Panel (Role: Admin)     │ │
+│  │  - Strategy Creation    │          │   - System Monitor                │ │
+│  │  - Broker Setup         │          │   - User Management               │ │
+│  │  - Real-time Status     │          │   - Playground/Testing            │ │
+│  └───────────┬─────────────┘          └────────────────┬──────────────────┘ │
+└──────────────┼──────────────────────────────────────────┼───────────────────┘
+               │                                           │
+               │ HTTPS/REST                    HTTPS/REST │
+               │ JWT Auth                      JWT Auth + │
+               │                               Role-Based  │
+               └────────────────┬──────────────┘           │
+                                │                          │
+                                ▼                          ▼
+              ┌─────────────────────────────────────────────────────────┐
+              │              FastAPI Backend (API Gateway)               │
+              │                                                          │
+              │  ┌────────────┐  ┌────────────┐  ┌──────────────────┐  │
+              │  │ Auth API   │  │Strategy API│  │ Admin API         │  │
+              │  │ (JWT)      │  │            │  │ (Role Protected)  │  │
+              │  └────────────┘  └────────────┘  └──────────────────┘  │
+              │                                                          │
+              │  ┌──────────────────────────────────────────────────┐   │
+              │  │        Proxy Middleware                          │   │
+              │  │  - Role validation (Admin/User/Broker)           │   │
+              │  │  - Request authentication                        │   │
+              │  │  - CORS handling                                 │   │
+              │  └──────────────────────────────────────────────────┘   │
+              └───────────────────────┬──────────────────────────────────┘
+                                      │
+          ┌───────────────────────────┴───────────────────────────┐
+          │                                                       │
+          ▼                                                       ▼
+┌──────────────────────┐                           ┌──────────────────────┐
+│  Strategy Manager    │                           │  Broker Connector    │
+│  - Validation        │                           │  - Zerodha Wrapper   │
+│  - State Management  │                           │  - Dhan Wrapper      │
+│  - Lifecycle Control │                           │  - Fyers Wrapper     │
+└──────────┬───────────┘                           └────────────┬─────────┘
+           │                                                     │
+           ▼                                                     ▼
+    ┌────────────────┐                                ┌──────────────────────┐
+    │  Redis Cache   │◄──────────────────────────────►│  Execution Engine    │
+    │  (Runtime      │                                │  (Order Placement)   │
+    │   State)       │                                │  - Buy Orders        │
+    │                │                                │  - Sell Orders       │
+    │ - Active       │                                │  - Stop-Loss         │
+    │   Strategies   │                                │  - Retry Logic       │
+    │ - Market Data  │                                └──────────────────────┘
+    │ - User         │
+    │   Sessions     │
+    └────────┬───────┘
+             │
+     ┌───────┴────────┐
+     │                │
+     ▼                ▼
+┌──────────┐   ┌──────────────────────┐
+│Scheduler │   │  Market Listener      │
+│  Service │   │  (WebSocket Feed)     │
+│  - Cron  │   │  - Price Updates      │
+│  - Timer │   │  - SL Monitoring      │
+└──────────┘   └──────────────────────┘
+     │                │
+     └───────┬────────┘
+             ▼
+   ┌──────────────────────┐
+   │  PostgreSQL (RDS)     │
+   │  - Users (with roles) │
+   │  - Strategies         │
+   │  - Broker Creds       │
+   │  - Execution Logs     │
+   │  - System Config      │
+   └──────────────────────┘
 ```
-                 ┌──────────────────────────┐
-                 │        Mobile App         │
-                 │  - Register/Login         │
-                 │  - Broker Key Input       │
-                 │  - Strategy Creation      │
-                 │  - Start/Stop Strategy    │
-                 └──────────────┬───────────┘
-                                │ HTTPS/REST
-                                ▼
-                 ┌──────────────────────────┐
-                 │      FastAPI Backend     │
-                 │  Auth API                │
-                 │  Strategy API            │
-                 │  Broker Validation API   │
-                 └───────────┬──────────────┘
-                     ┌───────┴──────────┐
-                     ▼                  ▼
-        ┌───────────────────┐   ┌──────────────────────┐
-        │ Strategy Manager   │   │  Broker Connector     │
-        │ (validation, save) │   │  Zerodha Wrapper      │
-        └───────┬───────────┘   └─────────┬────────────┘
-                │                         │
-                ▼                         ▼
-         ┌────────────────┐       ┌──────────────────────┐
-         │   Redis Cache   │<---->│   Execution Engine    │
-         │  (runtime state)│       │  (order placement)   │
-         └─────────┬──────┘       └──────────────────────┘
-                   │          
-                   │          
-       ┌───────────▼───────────┐       ┌──────────────────────────┐
-       │       Scheduler        │       │      Market Listener      │
-       │  (Buy/Sell timers)     │       │  (WebSocket price feed)  │
-       └───────────┬───────────┘       └──────────┬───────────────┘
-                   │                               │
-                   └───────────────┬───────────────┘
-                                   ▼
-                    ┌─────────────────────────┐
-                    │   PostgreSQL (RDS)       │
-                    │ Users / Strategies / Logs │
-                    └──────────────────────────┘
+
+---
+
+# **2.1 Role-Based Access Architecture**
+
+### **Authentication & Authorization Flow**
+
+```text
+User Request (Mobile/Web)
+     │
+     ▼
+┌─────────────────────┐
+│  Next.js Proxy      │  ← For web requests
+│  or JWT Middleware  │  ← For mobile requests
+└─────────┬───────────┘
+          │
+          ▼
+     Extract JWT
+          │
+          ▼
+┌─────────────────────┐
+│  Validate Token     │
+│  & Extract Role     │
+└─────────┬───────────┘
+          │
+          ├─→ Role: Admin  → Full Access (All Endpoints)
+          ├─→ Role: User   → Limited Access (Own Data)
+          └─→ Role: Broker → Broker-Specific Data
 ```
+
+### **Role Permission Matrix**
+
+| Endpoint Pattern | Admin | User | Broker | Guest |
+|------------------|-------|------|--------|-------|
+| `/auth/*` | ✅ | ✅ | ✅ | ✅ |
+| `/strategy/create` | ✅ | ✅ | ❌ | ❌ |
+| `/strategy/list` | ✅ (all) | ✅ (own) | ❌ | ❌ |
+| `/admin/users` | ✅ | ❌ | ❌ | ❌ |
+| `/admin/system` | ✅ | ❌ | ❌ | ❌ |
+| `/broker/stats` | ✅ | ❌ | ✅ (own) | ❌ |
+| `/playground/*` | ✅ | ✅ | ❌ | ❌ |
 
 ---
 
@@ -97,6 +177,310 @@ The system executes BUY/SELL/SL orders with microsecond-level Redis access and m
 * Broker Setup Module
 * Strategy Creator
 * Strategy Controller
+
+---
+
+# **3.1.1 Admin Web Application (Next.js 15)**
+
+### **Responsibilities**
+
+* Role-based user interface (Admin/User/Broker)
+* Server-side rendering for optimal performance
+* Real-time strategy monitoring
+* User management (Admin only)
+* System health dashboard
+* Strategy playground/testing
+* Comprehensive analytics
+
+### **Technology Stack**
+
+* **Framework**: Next.js 15 with App Router
+* **Authentication**: NextAuth.js v5 + JWT
+* **UI Components**: Shadcn/ui + Tailwind CSS
+* **State Management**: React Server Components + Zustand (client state)
+* **Forms**: React Hook Form + Zod validation
+* **Charts**: Recharts for analytics
+* **Real-time**: Server-Sent Events (SSE)
+
+### **Application Structure**
+
+```text
+admin-web/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/
+│   │   │   └── page.tsx           # Login page
+│   │   └── register/
+│   │       └── page.tsx           # Registration
+│   ├── (dashboard)/
+│   │   ├── layout.tsx             # Authenticated layout with sidebar
+│   │   ├── dashboard/
+│   │   │   └── page.tsx           # User dashboard
+│   │   ├── strategies/
+│   │   │   ├── page.tsx           # Strategy list
+│   │   │   ├── create/
+│   │   │   │   └── page.tsx       # Create strategy
+│   │   │   └── [id]/
+│   │   │       └── page.tsx       # Strategy details
+│   │   ├── brokers/
+│   │   │   └── page.tsx           # Broker connection
+│   │   ├── playground/
+│   │   │   └── page.tsx           # Strategy testing
+│   │   └── profile/
+│   │       └── page.tsx           # User profile
+│   ├── (admin)/
+│   │   ├── admin/
+│   │   │   ├── users/
+│   │   │   │   └── page.tsx       # User management
+│   │   │   ├── strategies/
+│   │   │   │   └── page.tsx       # All strategies
+│   │   │   ├── system/
+│   │   │   │   └── page.tsx       # System monitoring
+│   │   │   └── analytics/
+│   │   │       └── page.tsx       # Platform analytics
+│   ├── api/
+│   │   ├── auth/
+│   │   │   └── [...nextauth]/
+│   │   │       └── route.ts       # NextAuth config
+│   │   ├── strategies/
+│   │   │   └── route.ts           # Strategy API proxy
+│   │   └── admin/
+│   │       └── route.ts           # Admin API proxy
+│   ├── proxy.ts                   # Auth middleware
+│   └── layout.tsx                 # Root layout
+├── components/
+│   ├── auth/
+│   │   └── LoginForm.tsx
+│   ├── dashboard/
+│   │   ├── StrategyCard.tsx
+│   │   ├── StatusMonitor.tsx
+│   │   └── QuickActions.tsx
+│   ├── admin/
+│   │   ├── UserTable.tsx
+│   │   ├── SystemMetrics.tsx
+│   │   └── StrategyOverview.tsx
+│   └── ui/                        # Shadcn components
+├── lib/
+│   ├── auth.ts                    # Auth utilities
+│   ├── api.ts                     # API client
+│   └── utils.ts                   # Helper functions
+└── styles/
+    └── globals.css
+```
+
+### **Key Modules**
+
+#### **Authentication Module**
+
+```typescript
+// lib/auth.ts
+export async function getCurrentUser() {
+  const session = await getServerSession(authOptions)
+  if (!session) return null
+  
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    role: session.user.role, // Admin | User | Broker
+  }
+}
+
+export function requireRole(role: string[]) {
+  return async function middleware(req) {
+    const user = await getCurrentUser()
+    if (!user || !role.includes(user.role)) {
+      throw new Error('Unauthorized')
+    }
+    return user
+  }
+}
+```
+
+#### **Proxy Middleware**
+
+```typescript
+// proxy.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export async function proxy(request: NextRequest) {
+  const token = request.cookies.get('next-auth.session-token')
+  
+  // Public routes
+  if (request.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.next()
+  }
+  
+  // Protected routes require authentication
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+  
+  // Role-based route protection
+  const user = await getUserFromToken(token)
+  
+  // Admin-only routes
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (user.role !== 'Admin') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+  }
+  
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+}
+```
+
+#### **API Integration**
+
+```typescript
+// lib/api.ts
+class ApiClient {
+  private baseUrl: string
+  
+  constructor() {
+    this.baseUrl = process.env.NEXT_PUBLIC_API_URL!
+  }
+  
+  async request(endpoint: string, options: RequestInit = {}) {
+    const token = await getToken()
+    
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...options.headers,
+      },
+    })
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`)
+    }
+    
+    return response.json()
+  }
+  
+  // Strategy endpoints
+  async getStrategies() {
+    return this.request('/strategies')
+  }
+  
+  async createStrategy(data: StrategyCreate) {
+    return this.request('/strategies', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+  
+  // Admin endpoints (Admin role required)
+  async getAllUsers() {
+    return this.request('/admin/users')
+  }
+  
+  async getSystemMetrics() {
+    return this.request('/admin/system/metrics')
+  }
+}
+
+export const api = new ApiClient()
+```
+
+### **Features by Role**
+
+#### **Admin Role Features**
+
+* User Management
+  * View all users
+  * Create/Edit/Delete users
+  * Assign roles
+  * Suspend/Activate accounts
+* System Monitoring
+  * Real-time metrics dashboard
+  * Order execution logs
+  * Error tracking
+  * Performance analytics
+* Strategy Oversight
+  * View all strategies
+  * Monitor execution status
+  * Force stop strategies (emergency)
+* Configuration Management
+  * System settings
+  * Broker configurations
+  * Feature flags
+
+#### **User Role Features**
+
+* Strategy Management
+  * Create/Edit strategies
+  * Start/Stop own strategies
+  * View execution history
+* Broker Integration
+  * Connect broker accounts
+  * Manage API credentials
+  * View connection status
+* Dashboard
+  * Personal analytics
+  * Performance metrics
+  * P&L tracking
+* Playground
+  * Test strategies with simulated data
+  * Backtest historical performance
+
+#### **Broker Role Features**
+
+* Integration Monitoring
+  * View strategies using their broker API
+  * Monitor API health
+  * Track order success rates
+* Analytics
+  * Order volume statistics
+  * Integration performance
+
+### **Real-Time Updates Implementation**
+
+```typescript
+// Server-Sent Events for real-time strategy updates
+// app/api/strategies/[id]/stream/route.ts
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const encoder = new TextEncoder()
+  
+  const stream = new ReadableStream({
+    async start(controller) {
+      // Subscribe to Redis pub/sub for strategy updates
+      const redis = await getRedisClient()
+      const subscriber = redis.duplicate()
+      
+      await subscriber.subscribe(`strategy:${params.id}:updates`, (message) => {
+        const data = `data: ${JSON.stringify(message)}\n\n`
+        controller.enqueue(encoder.encode(data))
+      })
+      
+      // Keep connection alive
+      const keepAlive = setInterval(() => {
+        controller.enqueue(encoder.encode(': keepalive\n\n'))
+      }, 30000)
+      
+      req.signal.addEventListener('abort', () => {
+        clearInterval(keepAlive)
+        subscriber.unsubscribe()
+        controller.close()
+      })
+    },
+  })
+  
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  })
+}
+```
 
 ---
 

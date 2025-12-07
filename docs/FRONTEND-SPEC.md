@@ -1,12 +1,16 @@
 # 📘 **FRONTEND-SPEC.md**
 
-### **Algo Trading System – Mobile App (React Native / Expo)**
+### **Algo Trading System – Dual Frontend Architecture**
 
 ---
 
 # **1. Overview**
 
-The frontend is a simple, minimal, high-speed mobile app designed for **retail traders**, especially users with **low technical expertise**, to:
+The Algo Trading System provides **two frontend interfaces** to serve different user needs and access modes:
+
+## **1.1 Mobile App (React Native / Expo)**
+
+A simple, minimal, high-speed mobile app designed for **retail traders**, especially users with **low technical expertise**, to:
 
 * Register & Login
 * Enter Broker API credentials
@@ -14,7 +18,31 @@ The frontend is a simple, minimal, high-speed mobile app designed for **retail t
 * Start/Stop automation
 * View strategy status
 
-The focus is **simplicity**, **minimal UI**, **zero complexity**, and **fast interaction**, exactly as defined in the PRD frontend requirements.
+The focus is **simplicity**, **minimal UI**, **zero complexity**, and **fast interaction**.
+
+## **1.2 Admin Web Application (Next.js 15)**
+
+A comprehensive web-based administration platform providing:
+
+### **For Admin Users**:
+* User management (create, edit, delete, assign roles)
+* System health monitoring (metrics, logs, alerts)
+* Strategy oversight (view all strategies, force stop)
+* Platform analytics (user growth, order volume, success rates)
+* Audit logging and compliance
+
+### **For Regular Users**:
+* **Alternative to mobile app** – Full access to all strategy features via web browser
+* Web-based strategy creation and management
+* Broker integration management
+* **Strategy Playground** – Test strategies with simulated data (no real money)
+* Personal dashboard with P&L tracking
+* Real-time updates via Server-Sent Events
+
+### **For Broker Users**:
+* Integration analytics
+* API health monitoring
+* Order success rates and error tracking
 
 ---
 
@@ -505,3 +533,92 @@ If you want next:
 ### ✅ FULL DEV ONBOARDING DOCUMENT
 
 Just tell me — **“Generate X next.”**
+
+# **13. Admin Web Application (Next.js 15)**
+
+## **13.1 Overview**
+
+The Admin Web Application is a comprehensive web-based platform providing role-based access for:
+- **Admin Users**: Full system management
+- **Regular Users**: Alternative to mobile app with added playground feature
+- **Broker Users**: Integration analytics and monitoring
+
+## **13.2 Technology Stack**
+
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| UI Library | Shadcn/ui + Radix UI |
+| Styling | Tailwind CSS |
+| Authentication | NextAuth.js v5 |
+| State Management | Zustand + React Server Components |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts |
+| Real-Time | Server-Sent Events (SSE) |
+
+## **13.3 Key Features by Role**
+
+### **Admin Features**
+1. User Management Dashboard
+2. System Health Monitoring
+3. Strategy Oversight (all users)
+4. Platform Analytics
+5. Audit Logging
+
+### **User Features**
+1. Web-based Strategy Management
+2. Strategy Playground (testing without real money)
+3. Broker Integration
+4. Real-time Updates (SSE)
+5. Personal Dashboard
+
+### **Broker Features**
+1. Integration Analytics
+2. API Health Monitoring
+3. Order Success Rates
+
+## **13.4 Security & Authentication**
+
+- **NextAuth.js v5** with JWT tokens
+- **Proxy Middleware** for route protection
+- **Role-based access control** (Admin/User/Broker)
+- **Session timeout**: 30 minutes
+- **Secure cookies**: HttpOnly, Secure, SameSite
+
+## **13.5 Real-Time Updates (SSE)**
+
+Server-Sent Events provide live updates for:
+- Strategy status changes
+- Market price updates
+- System health metrics
+- Order notifications
+
+## **13.6 Deployment**
+
+**Local Development**:
+```bash
+cd admin-web && npm install && npm run dev
+```
+
+**Production**: Vercel, AWS Amplify, or AWS ECS
+
+**Environment Variables**:
+- `NEXTAUTH_URL`
+- `NEXTAUTH_SECRET`
+- `NEXT_PUBLIC_BACKEND_URL`
+- `REDIS_URL`
+
+---
+
+# ✔ FRONTEND-SPEC.md COMPLETE WITH DUAL FRONTEND ARCHITECTURE
+
+**Updated Sections**:
+- ✅ Overview (dual frontend: Mobile + Web)
+- ✅ Mobile App Specification (React Native)
+- ✅ Admin Web Application (Next.js 15)
+
+**For Complete Implementation Details**:
+- See `/docs/ADMIN-WEB-APP-SUMMARY.md`
+- See `/docs/HLD.MD` section 3.1.1
+
