@@ -22,6 +22,7 @@
     "Celery",
     "CI",
     "ciphertext",
+    "conftest",
     "CloudWatch",
     "contextlib",
     "Creds",
@@ -143,6 +144,7 @@
   "ignorePaths": [
     "node_modules/**",
     ".git/**",
+    ".github/**",
     ".vscode/**",
     "dist/**",
     "build/**",
